@@ -5,11 +5,16 @@
 //  Created by Mostafa Berg on 01/12/2017.
 //  Copyright © 2017 Nordic Semiconductor ASA. All rights reserved.
 //
-
+/*
+ * 接続した後の表示
+ */
 import UIKit
 import CoreBluetooth
 
-class BlinkyViewController: UITableViewController, CBCentralManagerDelegate {
+class BlinkyViewController:
+ UITableViewController,//継承したクラス、スーパークラス
+ CBCentralManagerDelegate//利用するコールバック、プロトコル
+{
     
     //MARK: - Outlets and Actions
     
@@ -27,7 +32,7 @@ class BlinkyViewController: UITableViewController, CBCentralManagerDelegate {
     }
 
     private var hapticGenerator : NSObject? //Only available on iOS 10 and above
-    private var blinkyPeripheral : BlinkyPeripheral!
+    private var mmsensorPeripheral : MmsensorPeripheral!
     private var centralManager : CBCentralManager!
     
     //MARK: - Implementation
@@ -36,20 +41,20 @@ class BlinkyViewController: UITableViewController, CBCentralManagerDelegate {
         centralManager.delegate = self
     }
     
-    public func setPeripheral(_ aPeripheral: BlinkyPeripheral) {
+    public func setPeripheral(_ aPeripheral: MmsensorPeripheral) {
         let peripheralName = aPeripheral.advertisedName ?? "Unknown Device"
         title = peripheralName
-        blinkyPeripheral = aPeripheral
+        mmsensorPeripheral = aPeripheral
         print("connecting to blinky")
-        centralManager.connect(blinkyPeripheral.basePeripheral, options: nil)
+        centralManager.connect(mmsensorPeripheral.basePeripheral, options: nil)//ペリフェラルと接続開始
     }
     
     private func handleSwitchValueChange(newValue isOn: Bool){
         if isOn {
-            blinkyPeripheral.turnOnLED()
+            mmsensorPeripheral.turnOnLED()
             ledStateLabel.text = "ON"
         } else {
-            blinkyPeripheral.turnOffLED()
+            mmsensorPeripheral.turnOffLED()
             ledStateLabel.text = "OFF"
         }
     }
@@ -65,8 +70,9 @@ class BlinkyViewController: UITableViewController, CBCentralManagerDelegate {
         ledStateLabel.text    = "Reading ..."
         ledToggleSwitch.isEnabled = false
         
+        /*
         print("adding button notification and led write callback handlers")
-        blinkyPeripheral.setButtonCallback { (isPressed) -> (Void) in
+        mmsensorPeripheral.setButtonCallback { (isPressed) -> (Void) in
             DispatchQueue.main.async {
                 if isPressed {
                     self.buttonStateLabel.text = "PRESSED"
@@ -76,8 +82,9 @@ class BlinkyViewController: UITableViewController, CBCentralManagerDelegate {
                 self.buttonTapHapticFeedback()
             }
         }
+        */
         
-        blinkyPeripheral.setLEDCallback { (isOn) -> (Void) in
+        mmsensorPeripheral.setLEDCallback { (isOn) -> (Void) in
             DispatchQueue.main.async {
                 if !self.ledToggleSwitch.isEnabled {
                     self.ledToggleSwitch.isEnabled = true
@@ -105,7 +112,7 @@ class BlinkyViewController: UITableViewController, CBCentralManagerDelegate {
     //MARK: - UIViewController
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        guard blinkyPeripheral.basePeripheral.state != .connected else {
+        guard mmsensorPeripheral.basePeripheral.state != .connected else {
             //View is coming back from a swipe, everything is already setup
             return
         }
@@ -115,11 +122,11 @@ class BlinkyViewController: UITableViewController, CBCentralManagerDelegate {
 
     override func viewDidDisappear(_ animated: Bool) {
         print("removing button notification and led write callback handlers")
-        blinkyPeripheral.removeLEDCallback()
-        blinkyPeripheral.removeButtonCallback()
+        mmsensorPeripheral.removeLEDCallback()
+        //mmsensorPeripheral.removeButtonCallback()
         
-        if blinkyPeripheral.basePeripheral.state == .connected {
-            centralManager.cancelPeripheralConnection(blinkyPeripheral.basePeripheral)
+        if mmsensorPeripheral.basePeripheral.state == .connected {
+            centralManager.cancelPeripheralConnection(mmsensorPeripheral.basePeripheral)
         }
         super.viewDidDisappear(animated)
     }
@@ -131,15 +138,17 @@ class BlinkyViewController: UITableViewController, CBCentralManagerDelegate {
         }
     }
 
+    // 接続完了コールバック
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        if peripheral == blinkyPeripheral.basePeripheral {
+        if peripheral == mmsensorPeripheral.basePeripheral {
             print("connected to blinky.")
-            blinkyPeripheral.discoverBlinkyServices()
+            //mmsensorPeripheral.discoverBlinkyServices()
         }
     }
-
+    
+    // 切断時のコールバック
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        if peripheral == blinkyPeripheral.basePeripheral {
+        if peripheral == mmsensorPeripheral.basePeripheral {
             print("blinky disconnected.")
             navigationController?.popToRootViewController(animated: true)
         }

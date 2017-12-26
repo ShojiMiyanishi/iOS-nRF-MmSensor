@@ -5,28 +5,37 @@
 //  Created by Mostafa Berg on 28/11/2017.
 //  Copyright © 2017 Nordic Semiconductor ASA. All rights reserved.
 //
-
+/*
+ * スキャンテーブルの表示
+ *
+ */
 import UIKit
 import CoreBluetooth
 
-class ScannerTableViewController: UITableViewController, CBCentralManagerDelegate {
+class ScannerTableViewController:
+ UITableViewController,//継承したクラス、スーパークラス
+ CBCentralManagerDelegate //利用するCoreBluetoothのセントラルマネージャのコールバック、プロトコル
+{
     @IBOutlet var emptyPeripheralsView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     private var centralManager: CBCentralManager!
-    private var discoveredPeripherals = [BlinkyPeripheral]()
-    private var targetperipheral: BlinkyPeripheral?
+    private var discoveredPeripherals = [MmsensorPeripheral]()
+    private var targetperipheral: MmsensorPeripheral?
     override var preferredStatusBarStyle: UIStatusBarStyle {
+        print("["+#function+"]")
         return .lightContent
     }
 
     override func viewDidLoad() {
+        print("["+#function+"]")
         super.viewDidLoad()
         centralManager = (((UIApplication.shared.delegate) as? AppDelegate)?.centralManager)!
         centralManager.delegate = self
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        print("["+#function+"]")
         super.viewWillTransition(to: size, with: coordinator)
         if view.subviews.contains(emptyPeripheralsView) {
             coordinator.animate(alongsideTransition: { (context) in
@@ -49,10 +58,12 @@ class ScannerTableViewController: UITableViewController, CBCentralManagerDelegat
     
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
+        print("["+#function+"]")
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("["+#function+"]")
         if discoveredPeripherals.count > 0 {
             hideEmptyPeripheralsView()
         } else {
@@ -62,12 +73,14 @@ class ScannerTableViewController: UITableViewController, CBCentralManagerDelegat
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let aCell = tableView.dequeueReusableCell(withIdentifier: BlinkyTableViewCell.reuseIdentifier, for: indexPath) as! BlinkyTableViewCell
+        print("["+#function+"]")
+        let aCell = tableView.dequeueReusableCell(withIdentifier: MmsensorTableViewCell.reuseIdentifier, for: indexPath) as! MmsensorTableViewCell
         aCell.setupViewWithPeripheral(discoveredPeripherals[indexPath.row])
         return aCell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("["+#function+"]")
         centralManager.stopScan()
         activityIndicator.stopAnimating()
         targetperipheral = discoveredPeripherals[indexPath.row]
@@ -77,32 +90,89 @@ class ScannerTableViewController: UITableViewController, CBCentralManagerDelegat
     
     // MARK: - CBCentralManagerDelegate
     //
+    
+    /*
+     * ペリフェラル発見コールバック
+     */
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        
-        let newPeripheral = BlinkyPeripheral(withPeripheral: peripheral, advertisementData: advertisementData, andRSSI: RSSI)
+        //print("["+#function+"]")
+        var advertisementEditData=advertisementData
+        // locallnameのないデバイス対策
+        if nil == advertisementData[CBAdvertisementDataLocalNameKey] {
+            if let name = peripheral.name{
+                advertisementEditData[CBAdvertisementDataLocalNameKey] = name + ".pName"
+            }
+        }
+        let newPeripheral = MmsensorPeripheral(withPeripheral: peripheral, advertisementData: advertisementEditData, andRSSI: RSSI)
         if !discoveredPeripherals.contains(newPeripheral) {
             discoveredPeripherals.append(newPeripheral)
             tableView.reloadData()
         } else {
             if let index = discoveredPeripherals.index(of: newPeripheral) {
-                if let aCell = tableView.cellForRow(at: [0,index]) as? BlinkyTableViewCell {
+                print("connect to \(peripheral.name ?? "no name" )")
+                // ペリフェラルと接続
+                self.centralManager.connect(peripheral, options: nil)
+                // テーブルに行を追加
+                if let aCell = tableView.cellForRow(at: [0,index]) as? MmsensorTableViewCell {
+                    
                     aCell.peripheralUpdatedAdvertisementData(newPeripheral)
                 }
             }
         }
     }
 
+    //  接続成功時に呼ばれる
+    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        print("[\(#function)]")
+        for device in discoveredPeripherals{
+            if peripheral.identifier.uuidString == device.idUuid.uuidString{
+                peripheral.delegate = device
+                device.discoverMmSensorServices()
+                return
+            }
+        }
+    }
+
+    /*
+     * 実行の順番
+     * 1.viewWillAppear
+     * 2.viewDidAppear
+     * 3.centralManagerDidUpdateState
+     */
+    /*
+     *  接続状況が変わるたびに呼ばれる BLEセントラルマネージャーの必須コールバック
+     *      .poweredOn:セントラルマネージャーがアップしたとき
+     *      .poweredOff:セントラルマネージャーが停止した時
+     *
+     */
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        print("["+#function+"]")
         if central.state != .poweredOn {
             print("Central is not powered on")
         } else {
+            print("[centralManagerDidUpdateState]scanForPeripherals")
             activityIndicator.startAnimating()
-            centralManager.scanForPeripherals(withServices: [BlinkyPeripheral.nordicBlinkyServiceUUID], options: [CBCentralManagerScanOptionAllowDuplicatesKey : true])
+            // スキャン開始
+            startScan()
         }
+    }
+    func startScan(){
+            // スキャン開始
+            centralManager.scanForPeripherals(
+                withServices: [
+                        //MmsensorPeripheral.LedServiceUUID,
+                        MmsensorPeripheral.BleIdServiceUUID,
+                        MmsensorPeripheral.WifiIdServiceUUID
+                ],
+                options: [
+                        CBCentralManagerScanOptionAllowDuplicatesKey : true // 重複スキャンを行う
+                ]
+            )
     }
 
     // MARK: - UIViewController
     override func viewWillAppear(_ animated: Bool) {
+        print("["+#function+"]")
         super.viewWillAppear(animated)
         discoveredPeripherals.removeAll()
         tableView.reloadData()
@@ -111,13 +181,16 @@ class ScannerTableViewController: UITableViewController, CBCentralManagerDelegat
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         centralManager.delegate = self
+        print("["+#function+"]")
         if centralManager.state == .poweredOn {
+            print("[viewDidAppear]scanForPeripherals")
             activityIndicator.startAnimating()
-            centralManager.scanForPeripherals(withServices: [BlinkyPeripheral.nordicBlinkyServiceUUID], options: [CBCentralManagerScanOptionAllowDuplicatesKey : true])
+            startScan()
         }
     }
 
     private func showEmptyPeripheralsView() {
+        print("["+#function+"]")
         if !view.subviews.contains(emptyPeripheralsView) {
             view.addSubview(emptyPeripheralsView)
             emptyPeripheralsView.alpha = 0
@@ -130,6 +203,7 @@ class ScannerTableViewController: UITableViewController, CBCentralManagerDelegat
     }
     
     private func hideEmptyPeripheralsView() {
+        print("["+#function+"]")
         if view.subviews.contains(emptyPeripheralsView) {
             UIView.animate(withDuration: 0.5, animations: {
                 self.emptyPeripheralsView.alpha = 0
@@ -141,10 +215,12 @@ class ScannerTableViewController: UITableViewController, CBCentralManagerDelegat
 
     // MARK: - Segue and navigation
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        print("["+#function+"]")
         return identifier == "PushBlinkyView"
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("["+#function+"]")
         if segue.identifier == "PushBlinkyView" {
             if let peripheral = targetperipheral {
                 let destinationView = segue.destination as! BlinkyViewController

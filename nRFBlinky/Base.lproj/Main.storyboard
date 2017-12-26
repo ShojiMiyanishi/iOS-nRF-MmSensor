@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,7 +14,7 @@
         <!--Root View Controller-->
         <scene sceneID="fsd-T6-weY">
             <objects>
-                <navigationController id="PGS-Qc-QX1" customClass="RootViewController" customModule="nRFBlinky" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController id="PGS-Qc-QX1" customClass="RootViewController" customModule="mmSensor" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" largeTitles="YES" id="kFD-cB-vKu">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -47,18 +48,18 @@
                     <viewLayoutGuide key="safeArea" id="g7q-9Z-KkO"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="-1378" y="18"/>
+            <point key="canvasLocation" x="-1946" y="-27"/>
         </scene>
         <!--nRF Blinky-->
         <scene sceneID="5G4-bL-xgJ">
             <objects>
-                <tableViewController id="CiD-oR-yqB" customClass="ScannerTableViewController" customModule="nRFBlinky" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="CiD-oR-yqB" customClass="ScannerTableViewController" customModule="mmSensor" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="50" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="KMv-Sr-wl8">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="551"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="blinkyPeripheralCell" id="mag-9E-0Rv" customClass="BlinkyTableViewCell" customModule="nRFBlinky" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="blinkyPeripheralCell" id="mag-9E-0Rv" userLabel="blinkyPeripheralCell" customClass="MmsensorTableViewCell" customModule="mmSensor" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="375" height="50"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" tableViewCell="mag-9E-0Rv" id="md2-Pu-VGj">
@@ -71,25 +72,42 @@
                                                 <constraint firstAttribute="width" constant="38" id="fse-ld-z1Y"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&lt;Peripheral Name&gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ufl-Iw-mhn">
-                                            <rect key="frame" x="16" y="14" width="148" height="21"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&lt;Name&gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ufl-Iw-mhn">
+                                            <rect key="frame" x="32" y="14.5" width="66.5" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="[  Id   ]" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hV7-Po-Kmm">
+                                            <rect key="frame" x="236" y="15" width="49" height="21"/>
+                                            <directionalEdgeInsets key="directionalLayoutMargins" top="8" leading="8" bottom="8" trailing="8"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                            <variation key="heightClass=regular-widthClass=compact" insetsLayoutMarginsFromSafeArea="NO"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="jsd-rJ-BYZ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ufl-Iw-mhn" secondAttribute="trailing" constant="10" id="FjS-n0-xxt"/>
-                                        <constraint firstItem="ufl-Iw-mhn" firstAttribute="leading" secondItem="md2-Pu-VGj" secondAttribute="leading" constant="16" id="Oie-w6-NOQ"/>
-                                        <constraint firstAttribute="trailing" secondItem="jsd-rJ-BYZ" secondAttribute="trailing" constant="8" id="iUh-3Q-9xh"/>
-                                        <constraint firstAttribute="bottom" secondItem="jsd-rJ-BYZ" secondAttribute="bottom" constant="8" id="mOy-rn-xAg"/>
-                                        <constraint firstItem="jsd-rJ-BYZ" firstAttribute="top" secondItem="md2-Pu-VGj" secondAttribute="top" constant="8" id="mPG-lS-uIV"/>
+                                        <constraint firstAttribute="bottom" secondItem="jsd-rJ-BYZ" secondAttribute="bottom" constant="8" id="79c-AE-XGC"/>
+                                        <constraint firstItem="jsd-rJ-BYZ" firstAttribute="top" secondItem="md2-Pu-VGj" secondAttribute="top" constant="8" id="FmJ-gL-dPX"/>
+                                        <constraint firstItem="jsd-rJ-BYZ" firstAttribute="leading" secondItem="hV7-Po-Kmm" secondAttribute="trailing" constant="10" id="Ic2-70-wDg"/>
+                                        <constraint firstItem="hV7-Po-Kmm" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ufl-Iw-mhn" secondAttribute="trailing" constant="10" id="byg-hC-Uzw"/>
+                                        <constraint firstAttribute="trailing" secondItem="jsd-rJ-BYZ" secondAttribute="trailing" constant="8" id="guB-2E-Ahh"/>
+                                        <constraint firstItem="ufl-Iw-mhn" firstAttribute="leading" secondItem="md2-Pu-VGj" secondAttribute="leading" constant="32" id="tHe-nP-efC"/>
+                                        <constraint firstItem="ufl-Iw-mhn" firstAttribute="leading" secondItem="md2-Pu-VGj" secondAttribute="leadingMargin" constant="16" id="ugw-gT-4Al"/>
+                                        <constraint firstItem="hV7-Po-Kmm" firstAttribute="centerY" secondItem="md2-Pu-VGj" secondAttribute="centerY" id="vNR-uD-4e3"/>
                                         <constraint firstItem="ufl-Iw-mhn" firstAttribute="centerY" secondItem="md2-Pu-VGj" secondAttribute="centerY" id="z74-Xj-mDz"/>
                                     </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="byg-hC-Uzw"/>
+                                        </mask>
+                                    </variation>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                 <viewLayoutGuide key="safeArea" id="rx1-Y8-wbQ"/>
                                 <connections>
+                                    <outlet property="peripheralId" destination="hV7-Po-Kmm" id="nyD-2F-a1u"/>
                                     <outlet property="peripheralName" destination="ufl-Iw-mhn" id="oTp-gb-zMr"/>
                                     <outlet property="peripheralRSSIIcon" destination="jsd-rJ-BYZ" id="ksP-2X-0CU"/>
                                 </connections>
@@ -191,12 +209,12 @@
                     <viewLayoutGuide key="safeArea" id="yGS-eH-kQh"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="-503" y="18"/>
+            <point key="canvasLocation" x="-504.80000000000001" y="16.641679160419791"/>
         </scene>
         <!--nRF Blinky-->
         <scene sceneID="Csp-ZW-f5R">
             <objects>
-                <tableViewController title="nRF Blinky" id="pK8-7d-htc" customClass="BlinkyViewController" customModule="nRFBlinky" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="nRF Blinky" id="pK8-7d-htc" customClass="BlinkyViewController" customModule="mmSensor" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="OWj-h6-vmu">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="551"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

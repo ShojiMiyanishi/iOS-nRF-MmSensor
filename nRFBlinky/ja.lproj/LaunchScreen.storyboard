@@ -18,7 +18,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Nordic_Logo" highlightedImage="Nordic_Logo" translatesAutoresizingMaskIntoConstraints="NO" id="egL-H5-Mag">
+                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Nordic_Logo" translatesAutoresizingMaskIntoConstraints="NO" id="egL-H5-Mag">
                                 <rect key="frame" x="87" y="123" width="146" height="241"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="241" id="9NY-C3-j2M"/>
@@ -38,9 +38,6 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <connections>
-                        <outlet property="view" destination="egL-H5-Mag" id="6lQ-2G-4Id"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

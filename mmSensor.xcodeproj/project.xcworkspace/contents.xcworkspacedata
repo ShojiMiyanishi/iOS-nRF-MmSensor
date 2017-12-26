@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:nRFBlinky.xcodeproj">
+      location = "self:/Users/omiya/embed/rx96011/swift/iOS-nRF-Blinky/mmSensor.xcodeproj">
    </FileRef>
 </Workspace>

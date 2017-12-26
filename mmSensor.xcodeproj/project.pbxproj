@@ -15,9 +15,10 @@
 		30B664651FCD6E65003C8B55 /* nRFBlinkyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B664641FCD6E65003C8B55 /* nRFBlinkyUITests.swift */; };
 		30B664801FCD9638003C8B55 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B6647F1FCD9638003C8B55 /* RootViewController.swift */; };
 		30B664831FCDA0EB003C8B55 /* ScannerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B664821FCDA0EB003C8B55 /* ScannerTableViewController.swift */; };
-		30B664851FCDA0FC003C8B55 /* BlinkyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B664841FCDA0FC003C8B55 /* BlinkyTableViewCell.swift */; };
-		30B664881FCDA2E0003C8B55 /* BlinkyPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B664871FCDA2E0003C8B55 /* BlinkyPeripheral.swift */; };
+		30B664851FCDA0FC003C8B55 /* MmsensorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B664841FCDA0FC003C8B55 /* MmsensorTableViewCell.swift */; };
+		30B664881FCDA2E0003C8B55 /* MmsensorPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B664871FCDA2E0003C8B55 /* MmsensorPeripheral.swift */; };
 		30B6648B1FD1590A003C8B55 /* BlinkyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B6648A1FD1590A003C8B55 /* BlinkyViewController.swift */; };
+		A3F677741FE22B2200D8C17E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A3F677731FE22B2200D8C17E /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,23 +40,25 @@
 
 /* Begin PBXFileReference section */
 		304F42E61FDECF050010A446 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
-		30B664411FCD6E65003C8B55 /* nRFBlinky.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nRFBlinky.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		30B664411FCD6E65003C8B55 /* mmSensor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mmSensor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30B664441FCD6E65003C8B55 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30B664491FCD6E65003C8B55 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		30B6644B1FCD6E65003C8B55 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		30B6644E1FCD6E65003C8B55 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		30B664501FCD6E65003C8B55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		30B664551FCD6E65003C8B55 /* nRFBlinkyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nRFBlinkyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		30B664551FCD6E65003C8B55 /* mmSensorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mmSensorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		30B664591FCD6E65003C8B55 /* nRFBlinkyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nRFBlinkyTests.swift; sourceTree = "<group>"; };
 		30B6645B1FCD6E65003C8B55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		30B664601FCD6E65003C8B55 /* nRFBlinkyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = nRFBlinkyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		30B664601FCD6E65003C8B55 /* mmSensorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mmSensorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		30B664641FCD6E65003C8B55 /* nRFBlinkyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nRFBlinkyUITests.swift; sourceTree = "<group>"; };
 		30B664661FCD6E65003C8B55 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30B6647F1FCD9638003C8B55 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		30B664821FCDA0EB003C8B55 /* ScannerTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerTableViewController.swift; sourceTree = "<group>"; };
-		30B664841FCDA0FC003C8B55 /* BlinkyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlinkyTableViewCell.swift; sourceTree = "<group>"; };
-		30B664871FCDA2E0003C8B55 /* BlinkyPeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlinkyPeripheral.swift; sourceTree = "<group>"; };
+		30B664841FCDA0FC003C8B55 /* MmsensorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MmsensorTableViewCell.swift; sourceTree = "<group>"; };
+		30B664871FCDA2E0003C8B55 /* MmsensorPeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MmsensorPeripheral.swift; sourceTree = "<group>"; };
 		30B6648A1FD1590A003C8B55 /* BlinkyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlinkyViewController.swift; sourceTree = "<group>"; };
+		A3F677701FE2134300D8C17E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
+		A3F677731FE22B2200D8C17E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = mmSensor/Images.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +89,7 @@
 		30B664381FCD6E65003C8B55 = {
 			isa = PBXGroup;
 			children = (
+				A3F677731FE22B2200D8C17E /* Images.xcassets */,
 				30B664431FCD6E65003C8B55 /* nRFBlinky */,
 				30B664581FCD6E65003C8B55 /* nRFBlinkyTests */,
 				30B664631FCD6E65003C8B55 /* nRFBlinkyUITests */,
@@ -96,9 +100,9 @@
 		30B664421FCD6E65003C8B55 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				30B664411FCD6E65003C8B55 /* nRFBlinky.app */,
-				30B664551FCD6E65003C8B55 /* nRFBlinkyTests.xctest */,
-				30B664601FCD6E65003C8B55 /* nRFBlinkyUITests.xctest */,
+				30B664411FCD6E65003C8B55 /* mmSensor.app */,
+				30B664551FCD6E65003C8B55 /* mmSensorTests.xctest */,
+				30B664601FCD6E65003C8B55 /* mmSensorUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -149,7 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				30B664821FCDA0EB003C8B55 /* ScannerTableViewController.swift */,
-				30B664841FCDA0FC003C8B55 /* BlinkyTableViewCell.swift */,
+				30B664841FCDA0FC003C8B55 /* MmsensorTableViewCell.swift */,
 			);
 			path = ScannerView;
 			sourceTree = "<group>";
@@ -157,7 +161,7 @@
 		30B664861FCDA2C5003C8B55 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				30B664871FCDA2E0003C8B55 /* BlinkyPeripheral.swift */,
+				30B664871FCDA2E0003C8B55 /* MmsensorPeripheral.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -173,9 +177,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		30B664401FCD6E65003C8B55 /* nRFBlinky */ = {
+		30B664401FCD6E65003C8B55 /* mmSensor */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 30B664691FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "nRFBlinky" */;
+			buildConfigurationList = 30B664691FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "mmSensor" */;
 			buildPhases = (
 				30B6643D1FCD6E65003C8B55 /* Sources */,
 				30B6643E1FCD6E65003C8B55 /* Frameworks */,
@@ -185,14 +189,14 @@
 			);
 			dependencies = (
 			);
-			name = nRFBlinky;
+			name = mmSensor;
 			productName = nRFBlinky;
-			productReference = 30B664411FCD6E65003C8B55 /* nRFBlinky.app */;
+			productReference = 30B664411FCD6E65003C8B55 /* mmSensor.app */;
 			productType = "com.apple.product-type.application";
 		};
-		30B664541FCD6E65003C8B55 /* nRFBlinkyTests */ = {
+		30B664541FCD6E65003C8B55 /* mmSensorTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 30B6646C1FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "nRFBlinkyTests" */;
+			buildConfigurationList = 30B6646C1FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "mmSensorTests" */;
 			buildPhases = (
 				30B664511FCD6E65003C8B55 /* Sources */,
 				30B664521FCD6E65003C8B55 /* Frameworks */,
@@ -203,14 +207,14 @@
 			dependencies = (
 				30B664571FCD6E65003C8B55 /* PBXTargetDependency */,
 			);
-			name = nRFBlinkyTests;
+			name = mmSensorTests;
 			productName = nRFBlinkyTests;
-			productReference = 30B664551FCD6E65003C8B55 /* nRFBlinkyTests.xctest */;
+			productReference = 30B664551FCD6E65003C8B55 /* mmSensorTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		30B6645F1FCD6E65003C8B55 /* nRFBlinkyUITests */ = {
+		30B6645F1FCD6E65003C8B55 /* mmSensorUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 30B6646F1FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "nRFBlinkyUITests" */;
+			buildConfigurationList = 30B6646F1FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "mmSensorUITests" */;
 			buildPhases = (
 				30B6645C1FCD6E65003C8B55 /* Sources */,
 				30B6645D1FCD6E65003C8B55 /* Frameworks */,
@@ -221,9 +225,9 @@
 			dependencies = (
 				30B664621FCD6E65003C8B55 /* PBXTargetDependency */,
 			);
-			name = nRFBlinkyUITests;
+			name = mmSensorUITests;
 			productName = nRFBlinkyUITests;
-			productReference = 30B664601FCD6E65003C8B55 /* nRFBlinkyUITests.xctest */;
+			productReference = 30B664601FCD6E65003C8B55 /* mmSensorUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -252,7 +256,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 30B6643C1FCD6E65003C8B55 /* Build configuration list for PBXProject "nRFBlinky" */;
+			buildConfigurationList = 30B6643C1FCD6E65003C8B55 /* Build configuration list for PBXProject "mmSensor" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -265,9 +269,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				30B664401FCD6E65003C8B55 /* nRFBlinky */,
-				30B664541FCD6E65003C8B55 /* nRFBlinkyTests */,
-				30B6645F1FCD6E65003C8B55 /* nRFBlinkyUITests */,
+				30B664401FCD6E65003C8B55 /* mmSensor */,
+				30B664541FCD6E65003C8B55 /* mmSensorTests */,
+				30B6645F1FCD6E65003C8B55 /* mmSensorUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -278,6 +282,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30B6644F1FCD6E65003C8B55 /* LaunchScreen.storyboard in Resources */,
+				A3F677741FE22B2200D8C17E /* Images.xcassets in Resources */,
 				30B6644C1FCD6E65003C8B55 /* Assets.xcassets in Resources */,
 				30B6644A1FCD6E65003C8B55 /* Main.storyboard in Resources */,
 			);
@@ -304,9 +309,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30B664851FCDA0FC003C8B55 /* BlinkyTableViewCell.swift in Sources */,
+				30B664851FCDA0FC003C8B55 /* MmsensorTableViewCell.swift in Sources */,
 				30B664831FCDA0EB003C8B55 /* ScannerTableViewController.swift in Sources */,
-				30B664881FCDA2E0003C8B55 /* BlinkyPeripheral.swift in Sources */,
+				30B664881FCDA2E0003C8B55 /* MmsensorPeripheral.swift in Sources */,
 				30B664801FCD9638003C8B55 /* RootViewController.swift in Sources */,
 				30B664451FCD6E65003C8B55 /* AppDelegate.swift in Sources */,
 				30B6648B1FD1590A003C8B55 /* BlinkyViewController.swift in Sources */,
@@ -334,12 +339,12 @@
 /* Begin PBXTargetDependency section */
 		30B664571FCD6E65003C8B55 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 30B664401FCD6E65003C8B55 /* nRFBlinky */;
+			target = 30B664401FCD6E65003C8B55 /* mmSensor */;
 			targetProxy = 30B664561FCD6E65003C8B55 /* PBXContainerItemProxy */;
 		};
 		30B664621FCD6E65003C8B55 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 30B664401FCD6E65003C8B55 /* nRFBlinky */;
+			target = 30B664401FCD6E65003C8B55 /* mmSensor */;
 			targetProxy = 30B664611FCD6E65003C8B55 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -350,6 +355,7 @@
 			children = (
 				30B664491FCD6E65003C8B55 /* Base */,
 				304F42E61FDECF050010A446 /* en */,
+				A3F677701FE2134300D8C17E /* ja */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -369,6 +375,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -426,6 +433,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -476,10 +484,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-3";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = P3R8YQEV4L;
+				DEVELOPMENT_TEAM = P59BQUC35D;
 				INFOPLIST_FILE = nRFBlinky/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nordicsemi.nrf-blinky";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -492,10 +501,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-3";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = P3R8YQEV4L;
+				DEVELOPMENT_TEAM = P59BQUC35D;
 				INFOPLIST_FILE = nRFBlinky/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nordicsemi.nrf-blinky";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -517,7 +527,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nRFBlinky.app/nRFBlinky";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mmSensor.app/mmSensor";
 			};
 			name = Debug;
 		};
@@ -534,7 +544,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/nRFBlinky.app/nRFBlinky";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mmSensor.app/mmSensor";
 			};
 			name = Release;
 		};
@@ -573,7 +583,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		30B6643C1FCD6E65003C8B55 /* Build configuration list for PBXProject "nRFBlinky" */ = {
+		30B6643C1FCD6E65003C8B55 /* Build configuration list for PBXProject "mmSensor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				30B664671FCD6E65003C8B55 /* Debug */,
@@ -582,7 +592,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		30B664691FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "nRFBlinky" */ = {
+		30B664691FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "mmSensor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				30B6646A1FCD6E65003C8B55 /* Debug */,
@@ -591,7 +601,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		30B6646C1FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "nRFBlinkyTests" */ = {
+		30B6646C1FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "mmSensorTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				30B6646D1FCD6E65003C8B55 /* Debug */,
@@ -600,7 +610,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		30B6646F1FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "nRFBlinkyUITests" */ = {
+		30B6646F1FCD6E65003C8B55 /* Build configuration list for PBXNativeTarget "mmSensorUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				30B664701FCD6E65003C8B55 /* Debug */,
