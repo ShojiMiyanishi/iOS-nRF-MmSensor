@@ -14,6 +14,7 @@ import CoreBluetooth
 
 class ScannerTableViewController:
  UITableViewController,//継承したクラス、スーパークラス
+ CBPeripheralDelegate,   // peripheralからのコールバック
  CBCentralManagerDelegate //利用するCoreBluetoothのセントラルマネージャのコールバック、プロトコル
 {
     @IBOutlet var emptyPeripheralsView: UIView!
@@ -58,12 +59,12 @@ class ScannerTableViewController:
     
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
-        print("["+#function+"]")
+        //print("["+#function+"]")
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("["+#function+"]")
+        //print("["+#function+"]")
         if discoveredPeripherals.count > 0 {
             hideEmptyPeripheralsView()
         } else {
@@ -73,14 +74,14 @@ class ScannerTableViewController:
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("["+#function+"]")
+        //print("["+#function+"]")
         let aCell = tableView.dequeueReusableCell(withIdentifier: MmsensorTableViewCell.reuseIdentifier, for: indexPath) as! MmsensorTableViewCell
         aCell.setupViewWithPeripheral(discoveredPeripherals[indexPath.row])
         return aCell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("["+#function+"]")
+        //print("["+#function+"]")
         centralManager.stopScan()
         activityIndicator.stopAnimating()
         targetperipheral = discoveredPeripherals[indexPath.row]
@@ -103,19 +104,29 @@ class ScannerTableViewController:
                 advertisementEditData[CBAdvertisementDataLocalNameKey] = name + ".pName"
             }
         }
-        let newPeripheral = MmsensorPeripheral(withPeripheral: peripheral, advertisementData: advertisementEditData, andRSSI: RSSI)
-        if !discoveredPeripherals.contains(newPeripheral) {
+        let newPeripheral = MmsensorPeripheral(withPeripheral: peripheral , advertisementData: advertisementEditData, andRSSI: RSSI)
+        if !discoveredPeripherals.contains(newPeripheral) {// peripheral.identifier を比較
+            // 未知のペリフェラル
+            print("["+#function+"]append:\(peripheral.name ?? "no name")")
             discoveredPeripherals.append(newPeripheral)
             tableView.reloadData()
-        } else {
             if let index = discoveredPeripherals.index(of: newPeripheral) {
-                print("connect to \(peripheral.name ?? "no name" )")
-                // ペリフェラルと接続
-                self.centralManager.connect(peripheral, options: nil)
-                // テーブルに行を追加
+                if nil == discoveredPeripherals[index].bleId && nil == discoveredPeripherals[index].wifiId{
+                    discoveredPeripherals[index].celIndex=index
+                    //print("connect to \(peripheral.name ?? "no name" ),\(peripheral.identifier)")
+                    // ペリフェラルと接続
+                    //discoveredPeripherals[index].connectForReadId(peripheral: peripheral)
+                    self.centralManager.connect(peripheral, options: nil)
+                }
+            }
+        } else {
+            // 既知のペリフェラル
+            if let index = discoveredPeripherals.index(of: newPeripheral) {
+                // 表示のアップデート
                 if let aCell = tableView.cellForRow(at: [0,index]) as? MmsensorTableViewCell {
+                    //print("update cell \(peripheral.name ?? "no name" ),\(peripheral.identifier)")
                     
-                    aCell.peripheralUpdatedAdvertisementData(newPeripheral)
+                    aCell.peripheralUpdatedAdvertisementData(discoveredPeripherals[index])
                 }
             }
         }
@@ -123,16 +134,25 @@ class ScannerTableViewController:
 
     //  接続成功時に呼ばれる
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        print("[\(#function)]\(peripheral.name ?? ""),\(peripheral.identifier)")
+        peripheral.delegate = self
+        peripheral.discoverServices([
+            MmsensorPeripheral.WifiIdServiceUUID
+        ])
+    }
+    //  切断時に呼ばれる
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print("[\(#function)]")
+        print("[Disconnect]\(peripheral.name ?? ""),\(peripheral.identifier)")
         for device in discoveredPeripherals{
-            if peripheral.identifier.uuidString == device.idUuid.uuidString{
-                peripheral.delegate = device
-                device.discoverMmSensorServices()
-                return
+            if device.basePeripheral.identifier == peripheral.identifier{
+                if let aCell = tableView.cellForRow(at: [0,device.celIndex]) as? MmsensorTableViewCell {
+                    aCell.peripheralUpdatedAdvertisementData(device)
+                    print("update:\(device.celIndex)")
+                }
             }
         }
     }
-
     /*
      * 実行の順番
      * 1.viewWillAppear
@@ -161,7 +181,6 @@ class ScannerTableViewController:
             centralManager.scanForPeripherals(
                 withServices: [
                         //MmsensorPeripheral.LedServiceUUID,
-                        MmsensorPeripheral.BleIdServiceUUID,
                         MmsensorPeripheral.WifiIdServiceUUID
                 ],
                 options: [
@@ -171,26 +190,26 @@ class ScannerTableViewController:
     }
 
     // MARK: - UIViewController
+    // viewが出現するときのコールバック
     override func viewWillAppear(_ animated: Bool) {
-        print("["+#function+"]")
+        //print("["+#function+"]")
         super.viewWillAppear(animated)
-        discoveredPeripherals.removeAll()
         tableView.reloadData()
     }
-    
+    // viewが消去される時のコールバック
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         centralManager.delegate = self
-        print("["+#function+"]")
+        //print("["+#function+"]")
         if centralManager.state == .poweredOn {
-            print("[viewDidAppear]scanForPeripherals")
+            //print("[viewDidAppear]scanForPeripherals")
             activityIndicator.startAnimating()
             startScan()
         }
     }
 
     private func showEmptyPeripheralsView() {
-        print("["+#function+"]")
+        //print("["+#function+"]")
         if !view.subviews.contains(emptyPeripheralsView) {
             view.addSubview(emptyPeripheralsView)
             emptyPeripheralsView.alpha = 0
@@ -203,7 +222,7 @@ class ScannerTableViewController:
     }
     
     private func hideEmptyPeripheralsView() {
-        print("["+#function+"]")
+        //print("["+#function+"]")
         if view.subviews.contains(emptyPeripheralsView) {
             UIView.animate(withDuration: 0.5, animations: {
                 self.emptyPeripheralsView.alpha = 0
@@ -215,12 +234,12 @@ class ScannerTableViewController:
 
     // MARK: - Segue and navigation
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        print("["+#function+"]")
+        //print("["+#function+"]")
         return identifier == "PushBlinkyView"
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        print("["+#function+"]")
+        //print("["+#function+"]")
         if segue.identifier == "PushBlinkyView" {
             if let peripheral = targetperipheral {
                 let destinationView = segue.destination as! BlinkyViewController
@@ -229,4 +248,126 @@ class ScannerTableViewController:
             }
         }
     }
+    /***********************************************************************************************
+     * IDを表示するためのBLEペリフェラルのコールバック
+     ***********************************************************************************************/
+    /*
+     * サービススキャンでサービスを発見した時のコールバック
+     */
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        print("[\(#function)]")
+        for device in discoveredPeripherals{
+            if device.basePeripheral.identifier == peripheral.identifier{
+                if let services = peripheral.services {
+                    for service in services {
+                        
+                        //print("\(peripheral.name ?? "" ),Discovered \(service.uuid.uuidString)")
+
+                        var CharacteristicsUUIDs:[CBUUID]!
+                        if service.uuid == MmsensorPeripheral.WifiIdServiceUUID {
+                            //print("Discovered WifiId service!")
+                            device.setWifiIdService( service )
+                            CharacteristicsUUIDs = [
+                                MmsensorPeripheral.WifiIdUUID,
+                                MmsensorPeripheral.BleIdUUID
+                            ]
+                        }else{
+                            print("Discovered \(service.uuid.uuidString)")
+                        }
+                        // サービスのキャラクタリスティックを検索する。
+                        if let searchUuid = CharacteristicsUUIDs{
+                            peripheral.discoverCharacteristics( searchUuid, for: service)
+                        }
+                   }
+                }
+            }
+        }
+    }
+    /*
+     * キャラクタリスティック発見時のコールバック
+     *
+     */
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        print("[\(#function)]sevice:\(service.uuid.uuidString)")
+        if let characteristics = service.characteristics {
+            for characteristic in characteristics {
+                print("sevice:\(service.uuid.uuidString),\(characteristic.uuid.uuidString)")
+            }
+        }else{
+            print("device[\(index)]sevice:\(service.uuid.uuidString),no chara")
+        }
+        if let characteristics = service.characteristics {
+            for device in discoveredPeripherals{
+                for characteristic in characteristics {
+                    if characteristic.uuid == MmsensorPeripheral.ledCharacteristicUUID {
+                        device.setCharacteristic(target: characteristic.uuid,value:characteristic)
+                        peripheral.readValue(for: characteristic)
+                    }else
+                    if characteristic.uuid == MmsensorPeripheral.WifiIdUUID {
+                        device.setCharacteristic(target: characteristic.uuid,value:characteristic)
+                        peripheral.readValue(for: characteristic)
+                    }else
+                    if characteristic.uuid == MmsensorPeripheral.BleIdUUID {
+                        device.setCharacteristic(target: characteristic.uuid,value:characteristic)
+                        peripheral.readValue(for: characteristic)
+                    }else{
+                        //print("Discovered characteristic:\(aCharacteristic.uuid.uuidString)")
+                    }
+                    //print("sevice:\(service.uuid.uuidString),\(characteristics.count)個のキャラクタリスティックを発見。")
+         
+                }
+            }
+        }
+    }
+    /*
+     * キャラクタリスティックのReadWriteによるコールバック
+     *
+     */
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        print("[\(#function)]\(characteristic.uuid)")
+        /*
+        if characteristic == buttonCharacteristic {
+            if let aValue = characteristic.value {
+                didReceiveButtonNotificationWithValue(aValue)
+            }
+        } else
+        */ 
+        for device in discoveredPeripherals{
+            if device.basePeripheral.identifier == peripheral.identifier{
+                if let count = characteristic.value?.count{
+                    var values0 = [UInt8](repeating:0, count: count)
+                    var values = [UInt8](repeating:0, count: count)
+                
+                    characteristic.value?.copyBytes(to: &values0,count:values.count)
+                    var index:Int=1
+                    for i in values0{
+                        values[count-index]=i
+                        index += 1
+                    }
+                    if characteristic.uuid==MmsensorPeripheral.BleIdUUID{
+                        let hexStr = values.map{
+                            String(format: "%.2hhx",$0)
+                        }.joined()
+                        device.bleId=hexStr
+                        print("[\(index)][\(#function)]ID:\(hexStr),bleId:\(String(describing: device.bleId))")
+                    }else
+                    if characteristic.uuid==MmsensorPeripheral.WifiIdUUID{
+                        let hexStr = values.map{
+                            String(format: "%.2hhx",$0)
+                        }.joined()
+                        device.wifiId=hexStr
+                        print("[\(index)][\(#function)]ID:\(hexStr),wifiId:\(device.wifiId)")
+                    }else{
+                        //print("[\(#function)]bleIdCharacteristic:\(bleIdCharacteristic.uuid.uuidString)")
+                        print("[\(#function)]characteristic.UUID:\(characteristic.uuid)")
+                        print("[\(#function)]characteristic:\(characteristic)")
+                    }
+                }
+                if nil != device.wifiId && nil != device.bleId{
+                    centralManager.cancelPeripheralConnection(peripheral)
+                }
+            }
+        }
+    }
+    
 }

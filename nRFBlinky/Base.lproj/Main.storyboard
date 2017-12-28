@@ -78,38 +78,50 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="[  Id   ]" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hV7-Po-Kmm">
-                                            <rect key="frame" x="236" y="15" width="49" height="21"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" insetsLayoutMarginsFromSafeArea="NO" text="&lt; Id &gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hV7-Po-Kmm" userLabel="Wifi Id">
+                                            <rect key="frame" x="191" y="13" width="72" height="21"/>
                                             <directionalEdgeInsets key="directionalLayoutMargins" top="8" leading="8" bottom="8" trailing="8"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                             <variation key="heightClass=regular-widthClass=compact" insetsLayoutMarginsFromSafeArea="NO"/>
                                         </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="&lt;RSSI&gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3JG-C5-BYE" userLabel="RSSI">
+                                            <rect key="frame" x="247" y="12" width="58" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="&lt;Ble&gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EWQ-fy-Ol0">
+                                            <rect key="frame" x="128" y="14" width="39" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="bottom" secondItem="jsd-rJ-BYZ" secondAttribute="bottom" constant="8" id="79c-AE-XGC"/>
+                                        <constraint firstItem="EWQ-fy-Ol0" firstAttribute="centerY" secondItem="md2-Pu-VGj" secondAttribute="centerY" id="9CT-ow-Gfa"/>
+                                        <constraint firstItem="EWQ-fy-Ol0" firstAttribute="leading" secondItem="md2-Pu-VGj" secondAttribute="leading" constant="200" id="FhU-BR-YqU"/>
                                         <constraint firstItem="jsd-rJ-BYZ" firstAttribute="top" secondItem="md2-Pu-VGj" secondAttribute="top" constant="8" id="FmJ-gL-dPX"/>
-                                        <constraint firstItem="jsd-rJ-BYZ" firstAttribute="leading" secondItem="hV7-Po-Kmm" secondAttribute="trailing" constant="10" id="Ic2-70-wDg"/>
-                                        <constraint firstItem="hV7-Po-Kmm" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ufl-Iw-mhn" secondAttribute="trailing" constant="10" id="byg-hC-Uzw"/>
+                                        <constraint firstItem="jsd-rJ-BYZ" firstAttribute="leading" secondItem="3JG-C5-BYE" secondAttribute="trailing" constant="10" id="K3V-qs-Z5T"/>
+                                        <constraint firstItem="3JG-C5-BYE" firstAttribute="centerY" secondItem="md2-Pu-VGj" secondAttribute="centerY" id="XTl-Yx-y0U"/>
+                                        <constraint firstItem="hV7-Po-Kmm" firstAttribute="leading" secondItem="md2-Pu-VGj" secondAttribute="leadingMargin" constant="400" id="gh2-Ml-D8p"/>
                                         <constraint firstAttribute="trailing" secondItem="jsd-rJ-BYZ" secondAttribute="trailing" constant="8" id="guB-2E-Ahh"/>
-                                        <constraint firstItem="ufl-Iw-mhn" firstAttribute="leading" secondItem="md2-Pu-VGj" secondAttribute="leading" constant="32" id="tHe-nP-efC"/>
+                                        <constraint firstItem="jsd-rJ-BYZ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ufl-Iw-mhn" secondAttribute="trailing" constant="100" id="in6-jB-hMn"/>
                                         <constraint firstItem="ufl-Iw-mhn" firstAttribute="leading" secondItem="md2-Pu-VGj" secondAttribute="leadingMargin" constant="16" id="ugw-gT-4Al"/>
                                         <constraint firstItem="hV7-Po-Kmm" firstAttribute="centerY" secondItem="md2-Pu-VGj" secondAttribute="centerY" id="vNR-uD-4e3"/>
                                         <constraint firstItem="ufl-Iw-mhn" firstAttribute="centerY" secondItem="md2-Pu-VGj" secondAttribute="centerY" id="z74-Xj-mDz"/>
                                     </constraints>
-                                    <variation key="default">
-                                        <mask key="constraints">
-                                            <exclude reference="byg-hC-Uzw"/>
-                                        </mask>
-                                    </variation>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                 <viewLayoutGuide key="safeArea" id="rx1-Y8-wbQ"/>
                                 <connections>
+                                    <outlet property="peripheralBleId" destination="EWQ-fy-Ol0" id="fFM-cB-9vv"/>
                                     <outlet property="peripheralId" destination="hV7-Po-Kmm" id="nyD-2F-a1u"/>
                                     <outlet property="peripheralName" destination="ufl-Iw-mhn" id="oTp-gb-zMr"/>
                                     <outlet property="peripheralRSSIIcon" destination="jsd-rJ-BYZ" id="ksP-2X-0CU"/>
+                                    <outlet property="peripheralRssi" destination="3JG-C5-BYE" id="RW4-u4-ffu"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -209,7 +221,7 @@
                     <viewLayoutGuide key="safeArea" id="yGS-eH-kQh"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="-504.80000000000001" y="16.641679160419791"/>
+            <point key="canvasLocation" x="-505.5" y="16.5"/>
         </scene>
         <!--nRF Blinky-->
         <scene sceneID="Csp-ZW-f5R">
@@ -220,10 +232,42 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
+                            <tableViewSection headerTitle="ID" footerTitle="" id="el8-sZ-cu6" userLabel="ID">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="40" id="cEw-2y-nZJ">
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="40"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cEw-2y-nZJ" id="vHy-CU-7oF">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="39.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ble id" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pGJ-BG-dPk" userLabel="bleId">
+                                                    <rect key="frame" x="26" y="9" width="42.5" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wifi Id" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zki-xx-WcQ" userLabel="wifiId">
+                                                    <rect key="frame" x="216" y="9.5" width="48.5" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="pGJ-BG-dPk" firstAttribute="centerY" secondItem="vHy-CU-7oF" secondAttribute="centerY" id="Im0-DN-AvN"/>
+                                                <constraint firstItem="zki-xx-WcQ" firstAttribute="leading" secondItem="vHy-CU-7oF" secondAttribute="leadingMargin" constant="200" id="MNs-o9-iok"/>
+                                                <constraint firstItem="pGJ-BG-dPk" firstAttribute="leading" secondItem="vHy-CU-7oF" secondAttribute="leadingMargin" constant="10" id="gXg-YS-U2P"/>
+                                                <constraint firstItem="zki-xx-WcQ" firstAttribute="centerY" secondItem="vHy-CU-7oF" secondAttribute="centerY" id="uuz-In-HpM"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                             <tableViewSection headerTitle="LED" footerTitle="Toggling the switch will cause LED 3 on the Blinky peripheral to turn ON or OFF." id="4YT-Qt-7PG">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="56" id="CfY-WS-s1U">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="56"/>
+                                        <rect key="frame" x="0.0" y="159" width="375" height="56"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="CfY-WS-s1U" id="Yh0-rd-aOm">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="55.5"/>
@@ -266,7 +310,7 @@
                             <tableViewSection headerTitle="Button" footerTitle="Pressing and releasing BUTTON 1 on the Blinky peripheral will update the button state here." id="qKS-C3-Jkd">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="56" id="e04-76-3eK">
-                                        <rect key="frame" x="0.0" y="203" width="375" height="56"/>
+                                        <rect key="frame" x="0.0" y="306.5" width="375" height="56"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="e04-76-3eK" id="vyB-hh-Z5o">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="55.5"/>
@@ -304,9 +348,11 @@
                         </connections>
                     </tableView>
                     <connections>
+                        <outlet property="bleId" destination="pGJ-BG-dPk" id="rEc-Qm-q6t"/>
                         <outlet property="buttonStateLabel" destination="oaQ-Ex-coH" id="bsL-Tw-a41"/>
                         <outlet property="ledStateLabel" destination="sXe-8K-21Q" id="L0w-wK-DsY"/>
                         <outlet property="ledToggleSwitch" destination="ug3-O5-D3G" id="uz2-8I-ALm"/>
+                        <outlet property="wifiId" destination="zki-xx-WcQ" id="bfO-Jr-4z1"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nOk-FO-efE" userLabel="First Responder" sceneMemberID="firstResponder"/>

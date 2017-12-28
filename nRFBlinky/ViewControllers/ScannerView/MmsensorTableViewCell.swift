@@ -18,6 +18,8 @@ class MmsensorTableViewCell:
     private var lastUpdateTimestamp = Date()//テーブルVIEWオブジェクト作成時間
     @IBOutlet weak var peripheralName: UILabel!// 文字
     @IBOutlet weak var peripheralId: UILabel!// 文字
+    @IBOutlet var peripheralRssi: UILabel!
+    @IBOutlet var peripheralBleId: UILabel!
     @IBOutlet weak var peripheralRSSIIcon: UIImageView! // アイコンオブジェクト
 
     private var peripheral: MmsensorPeripheral!
@@ -25,16 +27,20 @@ class MmsensorTableViewCell:
     /*********** BlinkyPerieralを1行に表示   *************/
     public func setupViewWithPeripheral(_ aPeripheral: MmsensorPeripheral) {
         peripheral = aPeripheral
-        peripheralName.text = aPeripheral.advertisedName!+":"+String(describing: peripheral!.RSSI.decimalValue)
-        print("wifiID:\(String(describing: aPeripheral.wifiId)),bleId:\(String(describing: aPeripheral.bleId))")
-        if let id = aPeripheral.bleId {
-            peripheralId.text = "[\(id)]"
-        }else
-        if let id = aPeripheral.wifiId {
-            peripheralId.text = "[\(id)]"
+        peripheralName.text = aPeripheral.advertisedName!
+        //print("["+#function+"]index:\(peripheral.celIndex),wifiID:\(String(describing: peripheral.wifiId)),bleId:\(String(describing: peripheral.bleId))")
+        peripheralRssi.text = String(describing: peripheral!.RSSI.decimalValue)
+        if let id = peripheral.wifiId {
+            peripheralId.text = "LAN: \(id)"
         }else{
             peripheralId.text = ""
         }
+        if let id = peripheral.bleId {
+            peripheralBleId.text = "BLE: \(id)"
+        }else{
+            peripheralBleId.text = ""
+        }
+        //print("\(String(describing: peripheralId.text))")
         
 //        peripheralName.text = aPeripheral.
 

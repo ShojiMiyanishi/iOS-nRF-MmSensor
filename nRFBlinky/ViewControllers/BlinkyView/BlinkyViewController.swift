@@ -18,6 +18,8 @@ class BlinkyViewController:
     
     //MARK: - Outlets and Actions
     
+    @IBOutlet weak var bleId: UILabel!
+    @IBOutlet weak var wifiId: UILabel!
     @IBOutlet weak var ledStateLabel: UILabel!
     @IBOutlet weak var ledToggleSwitch: UISwitch!
     @IBOutlet weak var buttonStateLabel: UILabel!
@@ -43,10 +45,12 @@ class BlinkyViewController:
     
     public func setPeripheral(_ aPeripheral: MmsensorPeripheral) {
         let peripheralName = aPeripheral.advertisedName ?? "Unknown Device"
-        title = peripheralName
+        title = "\(peripheralName)"
         mmsensorPeripheral = aPeripheral
-        print("connecting to blinky")
-        centralManager.connect(mmsensorPeripheral.basePeripheral, options: nil)//ペリフェラルと接続開始
+        //print("connect to \(peripheral.name ?? "no name" ),\(peripheral.identifier)")
+        //ペリフェラルと接続開始
+        
+        centralManager.connect(mmsensorPeripheral.basePeripheral, options: nil)
     }
     
     private func handleSwitchValueChange(newValue isOn: Bool){
@@ -69,7 +73,13 @@ class BlinkyViewController:
         buttonStateLabel.text = "Reading ..."
         ledStateLabel.text    = "Reading ..."
         ledToggleSwitch.isEnabled = false
-        
+        if let id = mmsensorPeripheral.bleId {
+            bleId.text = "BLE:\(id)"
+        }
+        if let id = mmsensorPeripheral.wifiId {
+            wifiId.text = "LAN: \(id)"
+        }
+        wifiId.center.x = view.center.x
         /*
         print("adding button notification and led write callback handlers")
         mmsensorPeripheral.setButtonCallback { (isPressed) -> (Void) in
@@ -103,6 +113,16 @@ class BlinkyViewController:
                 }
             }
         }
+        mmsensorPeripheral.setBleIdCallback { (str) -> (Void) in
+            DispatchQueue.main.async {
+                self.bleId.text = "BLE:\(str)"
+            }
+        }
+        mmsensorPeripheral.setWifiIdCallback { (str) -> (Void) in
+            DispatchQueue.main.async {
+                self.wifiId.text = "LAN: \(str)"
+            }
+        }
     }
     //MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
@@ -120,6 +140,7 @@ class BlinkyViewController:
         setupDependencies()
     }
 
+    // viewが消去される時
     override func viewDidDisappear(_ animated: Bool) {
         print("removing button notification and led write callback handlers")
         mmsensorPeripheral.removeLEDCallback()
@@ -140,9 +161,9 @@ class BlinkyViewController:
 
     // 接続完了コールバック
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        print("["+#function+"]")
         if peripheral == mmsensorPeripheral.basePeripheral {
-            print("connected to blinky.")
-            //mmsensorPeripheral.discoverBlinkyServices()
+            mmsensorPeripheral.discoverMmSensorServices()
         }
     }
     
@@ -150,7 +171,7 @@ class BlinkyViewController:
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         if peripheral == mmsensorPeripheral.basePeripheral {
             print("blinky disconnected.")
-            navigationController?.popToRootViewController(animated: true)
+            //navigationController?.popToRootViewController(animated: true)
         }
     }
 
@@ -158,11 +179,19 @@ class BlinkyViewController:
         if #available(iOS 10.0, *) {
             hapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
             (hapticGenerator as? UIImpactFeedbackGenerator)?.prepare()
+        }else{
+            print()
+            print("hapticGenerator is not #available")
+            print()
         }
     }
     private func buttonTapHapticFeedback() {
         if #available(iOS 10.0, *) {
             (hapticGenerator as? UIImpactFeedbackGenerator)?.impactOccurred()
+        }else{
+            print()
+            print("hapticGenerator is not #available")
+            print()
         }
     }
 }
