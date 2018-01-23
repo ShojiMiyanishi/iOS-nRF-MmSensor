@@ -13,15 +13,16 @@ import UIKit
 import CoreBluetooth
 
 class ScannerTableViewController:
- UITableViewController,//継承したクラス、スーパークラス
- CBPeripheralDelegate,   // peripheralからのコールバック
- CBCentralManagerDelegate //利用するCoreBluetoothのセントラルマネージャのコールバック、プロトコル
+ UITableViewController,     //　継承したクラス、スーパークラス
+ CBPeripheralDelegate,      //　一覧にIDを表示するために接続するので、MmsensorPeripheralを利用しないで、peripheralからのコールバックを定義する。
+ CBCentralManagerDelegate   //　利用するCoreBluetoothのセントラルマネージャのコールバック、プロトコル
 {
     @IBOutlet var emptyPeripheralsView: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     private var centralManager: CBCentralManager!
     private var discoveredPeripherals = [MmsensorPeripheral]()
+    public var discoveredMmSensors = [MmSensor]()
     private var targetperipheral: MmsensorPeripheral?
     override var preferredStatusBarStyle: UIStatusBarStyle {
         print("["+#function+"]")
@@ -104,24 +105,47 @@ class ScannerTableViewController:
                 advertisementEditData[CBAdvertisementDataLocalNameKey] = name + ".pName"
             }
         }
-        let newPeripheral = MmsensorPeripheral(withPeripheral: peripheral , advertisementData: advertisementEditData, andRSSI: RSSI)
+        let newMmSensor = MmSensor(id: peripheral.identifier)
+        if !discoveredMmSensors.contains(newMmSensor){
+            discoveredMmSensors.append(newMmSensor)
+        }
+        let index = discoveredMmSensors.index(of: newMmSensor)
+        let newPeripheral = MmsensorPeripheral(
+            withMmSensor: discoveredMmSensors[index!],
+            withPeripheral: peripheral ,
+            advertisementData: advertisementEditData, andRSSI: RSSI
+        )
         if !discoveredPeripherals.contains(newPeripheral) {// peripheral.identifier を比較
             // 未知のペリフェラル
             print("["+#function+"]append:\(peripheral.name ?? "no name")")
             discoveredPeripherals.append(newPeripheral)
             tableView.reloadData()
             if let index = discoveredPeripherals.index(of: newPeripheral) {
-                if nil == discoveredPeripherals[index].bleId && nil == discoveredPeripherals[index].wifiId{
+                if nil == discoveredPeripherals[index].mmSensor.bleId &&
+                    nil == discoveredPeripherals[index].mmSensor.wifiId
+                {
                     discoveredPeripherals[index].celIndex=index
                     //print("connect to \(peripheral.name ?? "no name" ),\(peripheral.identifier)")
                     // ペリフェラルと接続
                     //discoveredPeripherals[index].connectForReadId(peripheral: peripheral)
-                    self.centralManager.connect(peripheral, options: nil)
+                    var device=centralManager.retrievePeripherals(withIdentifiers: [newPeripheral.identifier])
+                    //ペリフェラルと接続開始
+                    if device.count>0{
+                        centralManager.connect(device[0], options: nil)
+                    }else{
+                        var device=centralManager.retrieveConnectedPeripherals(withServices: [MmsensorPeripheral.WifiIdUUID])
+                        if device.count>0{
+                            centralManager.connect(device[0], options: nil)
+                        }else{
+                            centralManager.connect(peripheral, options: nil)
+                        }
+                    }
                 }
             }
         } else {
             // 既知のペリフェラル
             if let index = discoveredPeripherals.index(of: newPeripheral) {
+                discoveredPeripherals[index].updateRssi(RSSI)
                 // 表示のアップデート
                 if let aCell = tableView.cellForRow(at: [0,index]) as? MmsensorTableViewCell {
                     //print("update cell \(peripheral.name ?? "no name" ),\(peripheral.identifier)")
@@ -194,6 +218,7 @@ class ScannerTableViewController:
     override func viewWillAppear(_ animated: Bool) {
         //print("["+#function+"]")
         super.viewWillAppear(animated)
+        discoveredPeripherals.removeAll()// 再利用するとキャラクタリスティックを操作できない。
         tableView.reloadData()
     }
     // viewが消去される時のコールバック
@@ -264,9 +289,9 @@ class ScannerTableViewController:
                         //print("\(peripheral.name ?? "" ),Discovered \(service.uuid.uuidString)")
 
                         var CharacteristicsUUIDs:[CBUUID]!
+                        device.setService( target: service )
                         if service.uuid == MmsensorPeripheral.WifiIdServiceUUID {
                             //print("Discovered WifiId service!")
-                            device.setWifiIdService( service )
                             CharacteristicsUUIDs = [
                                 MmsensorPeripheral.WifiIdUUID,
                                 MmsensorPeripheral.BleIdUUID
@@ -299,16 +324,20 @@ class ScannerTableViewController:
         if let characteristics = service.characteristics {
             for device in discoveredPeripherals{
                 for characteristic in characteristics {
+                    device.setCharacteristic(target: characteristic)
                     if characteristic.uuid == MmsensorPeripheral.ledCharacteristicUUID {
-                        device.setCharacteristic(target: characteristic.uuid,value:characteristic)
                         peripheral.readValue(for: characteristic)
                     }else
                     if characteristic.uuid == MmsensorPeripheral.WifiIdUUID {
-                        device.setCharacteristic(target: characteristic.uuid,value:characteristic)
                         peripheral.readValue(for: characteristic)
                     }else
                     if characteristic.uuid == MmsensorPeripheral.BleIdUUID {
-                        device.setCharacteristic(target: characteristic.uuid,value:characteristic)
+                        peripheral.readValue(for: characteristic)
+                    }else
+                    if characteristic.uuid == MmsensorPeripheral.RxUUID {
+                        peripheral.readValue(for: characteristic)
+                    }else
+                    if characteristic.uuid == MmsensorPeripheral.TxUUID {
                         peripheral.readValue(for: characteristic)
                     }else{
                         //print("Discovered characteristic:\(aCharacteristic.uuid.uuidString)")
@@ -348,22 +377,22 @@ class ScannerTableViewController:
                         let hexStr = values.map{
                             String(format: "%.2hhx",$0)
                         }.joined()
-                        device.bleId=hexStr
-                        print("[\(index)][\(#function)]ID:\(hexStr),bleId:\(String(describing: device.bleId))")
+                        device.mmSensor.bleId=hexStr
+                        print("[\(index)][\(#function)]ID:\(hexStr),bleId:\(String(describing: device.mmSensor.bleId))")
                     }else
                     if characteristic.uuid==MmsensorPeripheral.WifiIdUUID{
                         let hexStr = values.map{
                             String(format: "%.2hhx",$0)
                         }.joined()
-                        device.wifiId=hexStr
-                        print("[\(index)][\(#function)]ID:\(hexStr),wifiId:\(device.wifiId)")
+                        device.mmSensor.wifiId=hexStr
+                        print("[\(index)][\(#function)]ID:\(hexStr),wifiId:\(device.mmSensor.wifiId)")
                     }else{
                         //print("[\(#function)]bleIdCharacteristic:\(bleIdCharacteristic.uuid.uuidString)")
                         print("[\(#function)]characteristic.UUID:\(characteristic.uuid)")
                         print("[\(#function)]characteristic:\(characteristic)")
                     }
                 }
-                if nil != device.wifiId && nil != device.bleId{
+                if nil != device.mmSensor.wifiId && nil != device.mmSensor.bleId{
                     centralManager.cancelPeripheralConnection(peripheral)
                 }
             }

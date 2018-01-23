@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreBluetooth
+import Foundation
 
 class MmsensorPeripheral:
  NSObject,
@@ -34,15 +35,19 @@ class MmsensorPeripheral:
     public static let BatteryServiceUUID = CBUUID.init(string:"180F")
     public static let TxPowerServiceUUID = CBUUID.init(string:"1804")
     public static let EnvironmentalServiceUUID = CBUUID.init(string: "181A")
-    //public static let nordicBlinkyServiceUUID  = CBUUID.init(string: "65025680-0FD8-5FB5-5148-3027069B3FD9")// ID service
+    public static let BleIdServiceUUID  = CBUUID.init(string: "65025680-0FD8-5FB5-5148-3027069B3FD9")// ID service
     //MARK: - Properties
     //
     public private(set) var basePeripheral      : CBPeripheral //CoreBluetoothのペリフェラルクラス
-    public private(set) var advertisedName      : String?   //アドバタイズデータに入っているname
-    public var bleId              : String!    // BleIdキャラクタリスティック
-    public var wifiId              : String!    // BleIdキャラクタリスティック
-    public private(set) var RSSI                : NSNumber  //アドバタイズデータパケットの受信電力
-    public private(set) var rssiCount = 0
+    public private(set) var identifier          : UUID
+    public var mmSensor : MmSensor
+    //public private(set) var advertisedName      : String?   //アドバタイズデータに入っているname
+    //public var bleId              : String!    // BleIdキャラクタリスティック
+    //public var wifiId              : String!    // BleIdキャラクタリスティック
+    public var ssid               : String!     // Wifi アクセスポイントSSID
+
+    public private(set) var rssi     = 0.0  //アドバタイズデータパケットの受信電力
+    public private(set) var rssiCount = 0.0
     public private(set) var rssiSum = 0.0
     public private(set) var rssiSqr = 0.0
     public private(set) var advertisedServices  : [CBUUID]? //検索サービスUUID
@@ -54,27 +59,19 @@ class MmsensorPeripheral:
     private var ledCallbackHandler : ((Bool) -> (Void))?
     private var bleCallbackHandler : ((String) -> (Void))?
     private var wifiCallbackHandler : ((String) -> (Void))?
+    private var ssidCallbackHandler : ((String) -> (Void))?
+    private var rxCallbackHandler : ((String) -> (Void))?
 
-    //MARK: - Services and Characteristic properties
-    //
     public private(set) var bleIdService        : CBService?
-    private             var wifiIdService       : CBService?
-    private             var ledService          : CBService?
-    private             var buttonCharacteristic: CBCharacteristic?
-    private             var ledCharacteristic   : CBCharacteristic?
-    private             var wifiIdCharacteristic   : CBCharacteristic?
-    private             var bleIdCharacteristic   : CBCharacteristic?
+    public private(set) var wifiIdService       : CBService?
+    public private(set) var ledService          : CBService?
+    public private(set) var buttonCharacteristic: CBCharacteristic?
+    public private(set) var ledCharacteristic   : CBCharacteristic?
+    public private(set) var wifiIdCharacteristic: CBCharacteristic?
+    public private(set) var bleIdCharacteristic : CBCharacteristic?
+    public private(set) var txCharacteristic    : CBCharacteristic?
+    public private(set) var rxCharacteristic    : CBCharacteristic?
 
-    func setBleIdService(_ service:CBService){    bleIdService = service    }
-    func setWifiIdService(_ service:CBService){   wifiIdService = service    }
-    func setCharacteristic( target:CBUUID , value:CBCharacteristic){
-        if target == MmsensorPeripheral.BleIdUUID{
-            bleIdCharacteristic = value
-        }else
-        if target == MmsensorPeripheral.WifiIdUUID{
-            wifiIdCharacteristic = value
-        }
-    }
     enum Job{
         case none
         case readAll
@@ -86,25 +83,76 @@ class MmsensorPeripheral:
     var job=Job.none
     
     init(
+        withMmSensor aMmSensor: MmSensor,
         withPeripheral aPeripheral: CBPeripheral,
         advertisementData anAdvertisementDictionary: [String : Any],// 引数ラベル:advertisementData 仮引数：anAdvertisementDictionary
         andRSSI anRSSI: NSNumber)
     {
         basePeripheral = aPeripheral
-        RSSI = anRSSI
+        mmSensor = aMmSensor
+        identifier=aPeripheral.identifier
+        rssi = anRSSI.doubleValue
         rssiCount += 1
-        rssiSum += anRSSI.doubleValue
-        rssiSqr += anRSSI.doubleValue * anRSSI.doubleValue
+        rssiSum += rssi
+        rssiSqr += rssi * rssi
         
         super.init()
         
-        (advertisedName, advertisedServices) = parseAdvertisementData(anAdvertisementDictionary)
+        (mmSensor.advertisedName, advertisedServices) = parseAdvertisementData(anAdvertisementDictionary)
 
         //print("[MmsensorPeripheral.init]",(advertisedName, advertisedServices))
         basePeripheral.delegate = self
         
     }
-    
+
+    func setService( target:CBService){
+        if target.uuid == MmsensorPeripheral.WifiIdServiceUUID{
+            wifiIdService = target
+        }else
+        if target.uuid == MmsensorPeripheral.LedServiceUUID{
+            ledService = target
+        }else
+        if target.uuid == MmsensorPeripheral.BleIdServiceUUID{
+            bleIdService = target
+        }
+    }
+    func setCharacteristic( target:CBCharacteristic){
+        if target.uuid == MmsensorPeripheral.BleIdUUID{
+            bleIdCharacteristic = target
+        }else
+        if target.uuid == MmsensorPeripheral.WifiIdUUID{
+            wifiIdCharacteristic = target
+        }else
+        if target.uuid == MmsensorPeripheral.TxUUID{
+            txCharacteristic = target
+        }else
+        if target.uuid == MmsensorPeripheral.RxUUID{
+            rxCharacteristic = target
+        }else
+        if target.uuid == MmsensorPeripheral.ledCharacteristicUUID{
+            ledCharacteristic = target
+        }
+    }
+    public func updateRssi(_ _rssi:NSNumber){
+        let val = _rssi.doubleValue
+        rssiSum += val
+        rssiCount += 1
+        rssiSqr += val*val
+        rssi = round(rssiSum/rssiCount*10.0)/10.0
+    }
+    public func resetRssi(){
+        rssiCount = 0
+        rssiSqr = 0.0
+        rssiSum = 0.0
+    }
+    public func setRxCallback(aCallbackHandler: @escaping (String) -> (Void)){
+        print("["+#function+"]")
+        rxCallbackHandler = aCallbackHandler
+    }
+    public func setSsidCallback(aCallbackHandler: @escaping (String) -> (Void)){
+        print("["+#function+"]")
+        ssidCallbackHandler = aCallbackHandler
+    }
     public func setLEDCallback(aCallbackHandler: @escaping (Bool) -> (Void)){
         print("["+#function+"]")
         ledCallbackHandler = aCallbackHandler
@@ -118,15 +166,14 @@ class MmsensorPeripheral:
         wifiCallbackHandler = aCallbackHandler
     }
 
-/*
-    public func removeButtonCallback() {
-        print("["+#function+"]")
-        buttonPressHandler = nil
-    }
-*/    
-    public func removeLEDCallback() {
+
+    public func removeCallback() {
         print("["+#function+"]")
         ledCallbackHandler = nil
+        ssidCallbackHandler = nil
+        bleCallbackHandler = nil
+        wifiCallbackHandler = nil
+        rxCallbackHandler = nil
     }
 
     // 接続後のサービス検索開始
@@ -143,12 +190,12 @@ class MmsensorPeripheral:
             ServiceUUIDs.append(MmsensorPeripheral.WifiIdUUID)
             ServiceUUIDs.append(MmsensorPeripheral.BleIdUUID)
         }else{
-            if nil == bleId {
+            if nil == mmSensor.bleId {
                 if let readCharacteristic = bleIdCharacteristic{
                     basePeripheral.readValue(for: readCharacteristic)
                 }
             }
-            if nil == wifiId {
+            if nil == mmSensor.wifiId {
                 if let readCharacteristic = wifiIdCharacteristic{
                     basePeripheral.readValue(for: readCharacteristic)
                 }
@@ -211,16 +258,21 @@ class MmsensorPeripheral:
             basePeripheral.discoverCharacteristics( searchUuid, for: aService)
         }
     }
-    /*
-    public func enableButtonNotifications(_ buttonCharacteristic: CBCharacteristic) {
-        print("["+#function+"]Enabling notifications for button characteristic")
-        //basePeripheral.setNotifyValue(true, for: buttonCharacteristic)
+    public func enableRxNotifications(_ rxCharacteristic: CBCharacteristic) {
+        print("["+#function+"]Enabling notifications for rx characteristic")
+        basePeripheral.setNotifyValue(true, for: rxCharacteristic)
     }
-    */
+
     public func readLEDValue() {
         print("["+#function+"]")
         if let ledCharacteristic = ledCharacteristic {
             basePeripheral.readValue(for: ledCharacteristic)
+        }
+    }
+    public func readRxValue() {
+        print("["+#function+"]")
+        if let aCharacteristic = rxCharacteristic {
+            basePeripheral.readValue(for: aCharacteristic)
         }
     }
     
@@ -242,6 +294,11 @@ class MmsensorPeripheral:
         ledCallbackHandler?(ledIsOn)
     }
     
+    public func didReceiveRxNotificationWithValue(_ value: Data) {
+        print("["+#function+"]")
+        //let str = NSString(data:value , encoding: NSASCIIStringEncoding)
+        print("RX: \(value.count),\(value)")
+    }
 /*
     public func didReceiveButtonNotificationWithValue(_ aValue: Data) {
         print("["+#function+"]")
@@ -255,12 +312,12 @@ class MmsensorPeripheral:
 */    
     public func turnOnLED() {
         print("["+#function+"]")
-        writeLEDCharcateristicValue(Data([0x1]))
+        //writeLEDCharcateristicValue(Data([0x01]))
     }
     
     public func turnOffLED() {
         print("["+#function+"]")
-        writeLEDCharcateristicValue(Data([0x0]))
+        //writeLEDCharcateristicValue(Data([0x00]))
     }
     
     private func writeLEDCharcateristicValue(_ aValue: Data) {
@@ -270,8 +327,39 @@ class MmsensorPeripheral:
             return
         }
         basePeripheral.writeValue(aValue, for: ledCharacteristic, type: .withResponse)
+        /*
+        do{
+            try basePeripheral.writeValue(aValue, for: ledCharacteristic, type: .withResponse)
+        }catch {
+            print(error)
+        }
+        */
     }
 
+    public func getSsid() {
+        print("SSIDの取得["+#function+"]")
+        let command:String = "s\n"
+        writeTxCharcateristicValue(command)
+    }
+    public func getList() {
+        print("PingerListの取得["+#function+"]")
+        let command:String = "l\n"
+        writeTxCharcateristicValue(command)
+    }
+    public func smartConfig(){
+        print("スマート設定["+#function+"]")
+        let command:String = "z\n"
+        writeTxCharcateristicValue(command)
+    }
+    private func writeTxCharcateristicValue(_ str: String) {
+        guard let txCharacteristic = txCharacteristic else {
+            print("TX characteristic is not present, nothing to be done")
+            return
+        }
+        let value = Data.init(bytes:str,count:str.count)
+        print("["+#function+"]",str,value)
+        basePeripheral.writeValue(value, for: txCharacteristic, type: .withResponse)
+    }
     // アドバタイズデータの解析(パース)
     // 引数：anAdvertisementDictionaryは、key: Srting型、value:Anyの辞書
     // 戻り値：
@@ -313,14 +401,8 @@ class MmsensorPeripheral:
      *
      */
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        print("[\(#function)]\(characteristic.uuid)")
-        /*
-        if characteristic == buttonCharacteristic {
-            if let aValue = characteristic.value {
-                didReceiveButtonNotificationWithValue(aValue)
-            }
-        } else
-        */ 
+        print("[peripheral(didUpdateValueFor)]\(characteristic.uuid)")
+
         if let count = characteristic.value?.count{
             var values0 = [UInt8](repeating:0, count: count)
             var values = [UInt8](repeating:0, count: count)
@@ -331,43 +413,90 @@ class MmsensorPeripheral:
                 values[count-index]=i
                 index += 1
             }
-            if characteristic.uuid.uuidString==ledCharacteristic?.uuid.uuidString{
+            if characteristic.uuid.uuidString == ledCharacteristic?.uuid.uuidString{
                 if values[0]==0 {
                     ledIsOn = false
                 }else{
                     ledIsOn = true
                 }
-                print("led:\(ledIsOn),values:\(values)")
+                print("ledキャラクタリスティックの値:\(ledIsOn),values:\(values)")
                 ledCallbackHandler?(ledIsOn)
             }else
-            if characteristic.uuid==bleIdCharacteristic?.uuid{
+            if characteristic.uuid == bleIdCharacteristic?.uuid{
                 let hexStr = values.map{
                     String(format: "%.2hhx",$0)
                 }.joined()
-                self.bleId=hexStr
-                print("[\(index)][\(#function)]ID:\(hexStr),bleId:\(String(describing: self.bleId))")
+                self.mmSensor.bleId=hexStr
+                print("BLEIDキャラクタリスティックの値:\(hexStr),BleId:\(String(describing: self.mmSensor.bleId))")
                 bleCallbackHandler?(hexStr)
             }else
-            if characteristic.uuid==wifiIdCharacteristic?.uuid{
+            if characteristic.uuid == wifiIdCharacteristic?.uuid{
                 let hexStr = values.map{
                     String(format: "%.2hhx",$0)
                 }.joined()
-                self.wifiId=hexStr
-                print("[\(index)][\(#function)]ID:\(hexStr),wifiId:\(wifiId)")
+                self.mmSensor.wifiId=hexStr
+                print("[WifiIDキャラクタリスティックの値:\(hexStr),WifiId:\(self.mmSensor.wifiId)")
                 wifiCallbackHandler?(hexStr)
+            }else
+            if characteristic.uuid == rxCharacteristic?.uuid{
+                let str = values0.map{ String(format:"%c",$0)}.joined() 
+                print("rxキャラクタリスティックの値:",count,str,values0)
+                var idx = str.startIndex
+                rxCallbackHandler?(str)
+                while idx < str.endIndex{
+                    if str[idx]=="s" && str[str.index(after:idx)]==":"{
+                        let ssid = str.components(separatedBy: ":")
+                        if ssid.count>=2 {
+                            ssidCallbackHandler?(ssid[1])
+                        }
+                    }
+                    idx = str.index(after: idx)
+                }
+                
+            }else
+            if characteristic.uuid == txCharacteristic?.uuid{
+                let str = values0.map{ String(format:"%c",$0)}.joined() 
+                print("txキャラクタリスティックの値:",count,str,values0)
             }else{
                 //print("[\(#function)]bleIdCharacteristic:\(bleIdCharacteristic.uuid.uuidString)")
-                print("[\(#function)]characteristic.UUID:\(characteristic.uuid)")
-                print("[\(#function)]characteristic:\(characteristic)")
+                print("未対応キャラクタリスティック.UUID:\(characteristic.uuid)")
+                print("未対応キャラクタリスティックの値:\(characteristic)")
             }
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
+        print("notificatioのコールバック",characteristic.value ?? "")
         if characteristic.uuid == buttonCharacteristic?.uuid {
             print("Notification state is now \(characteristic.isNotifying) for Button characteristic")
             readButtonValue()
             readLEDValue()
+        }else
+        if characteristic.uuid == rxCharacteristic?.uuid {
+            if let count = characteristic.value?.count{
+                var values0 = [UInt8](repeating:0, count: count)
+                var values = [UInt8](repeating:0, count: count)
+            
+                characteristic.value?.copyBytes(to: &values0,count:values.count)
+                var index:Int=1
+                for i in values0{
+                    values[count-index]=i
+                    index += 1
+                }
+                let str = values0.map{ String(format:"%c",$0)}.joined() 
+                print("rxキャラクタリスティックの値:",count,str,values0)
+                var idx = str.startIndex
+                rxCallbackHandler?(str)
+                while idx < str.endIndex{
+                    if str[idx]=="s" && str[str.index(after:idx)]==":"{
+                        let ssid = str.components(separatedBy: ":")
+                        if ssid.count>=2 {
+                            ssidCallbackHandler?(ssid[1])
+                        }
+                    }
+                    idx = str.index(after: idx)
+                }
+            }
         } else {
             print("Notification state is now \(characteristic.isNotifying) for an unknown characteristic with UUID: \(characteristic.uuid.uuidString)")
         }
@@ -381,17 +510,18 @@ class MmsensorPeripheral:
         if let services = peripheral.services {
             for service in services {
                 var CharacteristicsUUIDs:[CBUUID]!
+                setService(target: service)
                 if service.uuid == MmsensorPeripheral.WifiIdServiceUUID {
-                    wifiIdService = service
                     print("Discovered WifiId service!")
                     CharacteristicsUUIDs = [
                         MmsensorPeripheral.WifiIdUUID,
-                        MmsensorPeripheral.BleIdUUID
+                        MmsensorPeripheral.BleIdUUID,
+                        MmsensorPeripheral.RxUUID,
+                        MmsensorPeripheral.TxUUID
                     ]
                 }else
                 if service.uuid == MmsensorPeripheral.LedServiceUUID {
                     print("Discovered LED service!")
-                    ledService = service
                     CharacteristicsUUIDs = [
                         MmsensorPeripheral.ledCharacteristicUUID
                     ]
@@ -412,29 +542,39 @@ class MmsensorPeripheral:
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         if let characteristics = service.characteristics {
             for characteristic in characteristics {
-                /*
-                if aCharacteristic.uuid == MmsensorPeripheral.buttonCharacteristicUUID {
-                    print("["+#function+"[Discovered Blinky button characteristic")
-                    buttonCharacteristic = aCharacteristic
-                    enableButtonNotifications(buttonCharacteristic!)
-                } else 
-                */
+                setCharacteristic(target: characteristic)
                 if characteristic.uuid == MmsensorPeripheral.ledCharacteristicUUID {
-                    ledCharacteristic = characteristic
                     if let readCharacteristic = ledCharacteristic{
                         peripheral.readValue(for: readCharacteristic)
                     }
                 }else
                 if characteristic.uuid == MmsensorPeripheral.WifiIdUUID {
-                    wifiIdCharacteristic = characteristic
                     if let readCharacteristic = wifiIdCharacteristic{
                         peripheral.readValue(for: readCharacteristic)
                     }
                 }else
                 if characteristic.uuid == MmsensorPeripheral.BleIdUUID {
-                    bleIdCharacteristic = characteristic
                     if let readCharacteristic = bleIdCharacteristic{
                         peripheral.readValue(for: readCharacteristic)
+                    }
+                }else
+                if characteristic.uuid == MmsensorPeripheral.TxUUID {
+                    if let readCharacteristic = txCharacteristic{
+                        peripheral.readValue(for: readCharacteristic)
+                        //rxが発見済みの場合はＳＳＩＤのデータを入手するコマンドを送信する。
+                        if nil != rxCharacteristic{
+                            //getSsid()
+                        }
+                    }
+                }else
+                if characteristic.uuid == MmsensorPeripheral.RxUUID {
+                    if let readCharacteristic = rxCharacteristic{
+                        peripheral.readValue(for: readCharacteristic)
+                        enableRxNotifications(rxCharacteristic!)
+                        //txが発見済みの場合はＳＳＩＤのデータを入手するコマンドを送信する。
+                        if nil != txCharacteristic{
+                            //getSsid()
+                        }
                     }
                 }else{
                     //print("Discovered characteristic:\(aCharacteristic.uuid.uuidString)")
@@ -444,11 +584,23 @@ class MmsensorPeripheral:
             }
         }
     }
-    
+    /*
+     * キャラクタリスティックの書き込み終了後にコールバック
+     */
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-        print("["+#function+"]")
         if characteristic == ledCharacteristic {
-            peripheral.readValue(for: ledCharacteristic!)
+            print("["+#function+"]LEDキャラクタリスティック",characteristic.value ?? "")
+            //peripheral.readValue(for: ledCharacteristic!)
+        }else
+        if characteristic == txCharacteristic {
+            print("["+#function+"]txキャラクタリスティック",characteristic.value ?? "")
+            //peripheral.readValue(for: rxCharacteristic!)
+        }else
+        if characteristic == rxCharacteristic {
+            print("["+#function+"]rxキャラクタリスティック",characteristic.value ?? "")
+            //peripheral.readValue(for: rxCharacteristic!)
+        }else{
+            print("["+#function+"]未対応キャラクタリスティック",characteristic.value ?? "")
         }
     }
 }

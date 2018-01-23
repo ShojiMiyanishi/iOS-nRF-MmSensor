@@ -307,35 +307,57 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Button" footerTitle="Pressing and releasing BUTTON 1 on the Blinky peripheral will update the button state here." id="qKS-C3-Jkd">
+                            <tableViewSection headerTitle="WiFi" footerTitle="" id="lkM-Lw-qPa" userLabel="WIFI">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="56" id="e04-76-3eK">
-                                        <rect key="frame" x="0.0" y="306.5" width="375" height="56"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="40" id="6cG-qi-UGL">
+                                        <rect key="frame" x="0.0" y="306.5" width="375" height="40"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="e04-76-3eK" id="vyB-hh-Z5o">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="55.5"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6cG-qi-UGL" id="DOx-BC-Brq">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="39.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_radio_button_checked" translatesAutoresizingMaskIntoConstraints="NO" id="xUH-nx-YIX">
-                                                    <rect key="frame" x="16" y="16" width="24" height="24"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="24" id="c4J-S6-AGl"/>
-                                                        <constraint firstAttribute="width" constant="24" id="eFo-h9-BEb"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UNKNOWN" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oaQ-Ex-coH">
-                                                    <rect key="frame" x="48" y="19" width="80.5" height="18"/>
-                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                                                    <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SSID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wIi-Oi-PQq" userLabel="ssid">
+                                                    <rect key="frame" x="26" y="9" width="37" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="security" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UPt-Rt-zYz">
+                                                    <rect key="frame" x="216" y="9.5" width="61" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="oaQ-Ex-coH" secondAttribute="trailing" constant="20" symbolic="YES" id="7gE-lQ-PrY"/>
-                                                <constraint firstItem="xUH-nx-YIX" firstAttribute="leading" secondItem="vyB-hh-Z5o" secondAttribute="leading" constant="16" id="Gq2-6E-KYs"/>
-                                                <constraint firstItem="oaQ-Ex-coH" firstAttribute="centerY" secondItem="xUH-nx-YIX" secondAttribute="centerY" id="die-Cc-qkb"/>
-                                                <constraint firstItem="xUH-nx-YIX" firstAttribute="centerY" secondItem="vyB-hh-Z5o" secondAttribute="centerY" id="fb6-gR-YFp"/>
-                                                <constraint firstItem="oaQ-Ex-coH" firstAttribute="leading" secondItem="xUH-nx-YIX" secondAttribute="trailing" constant="8" id="vxV-we-5ui"/>
+                                                <constraint firstItem="wIi-Oi-PQq" firstAttribute="centerY" secondItem="DOx-BC-Brq" secondAttribute="centerY" id="1aq-hP-ewQ"/>
+                                                <constraint firstItem="UPt-Rt-zYz" firstAttribute="leading" secondItem="DOx-BC-Brq" secondAttribute="leadingMargin" constant="200" id="7OT-ol-00I"/>
+                                                <constraint firstItem="wIi-Oi-PQq" firstAttribute="leading" secondItem="DOx-BC-Brq" secondAttribute="leadingMargin" constant="10" id="gic-PF-nyr"/>
+                                                <constraint firstItem="UPt-Rt-zYz" firstAttribute="centerY" secondItem="DOx-BC-Brq" secondAttribute="centerY" id="u2m-d6-7cl"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Rx" footerTitle="" id="3Hp-X6-Zkc" userLabel="Rx">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="40" id="WVJ-rF-Uyg">
+                                        <rect key="frame" x="0.0" y="410" width="375" height="40"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WVJ-rF-Uyg" id="Fk3-iO-gWc">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="39.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="rx" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g1C-H5-FxN" userLabel="rxLabel">
+                                                    <rect key="frame" x="26" y="9" width="219" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="g1C-H5-FxN" firstAttribute="leading" secondItem="Fk3-iO-gWc" secondAttribute="leadingMargin" constant="10" id="BoZ-4k-TWx"/>
+                                                <constraint firstItem="g1C-H5-FxN" firstAttribute="centerY" secondItem="Fk3-iO-gWc" secondAttribute="centerY" id="pzE-c0-8hY"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -349,9 +371,11 @@
                     </tableView>
                     <connections>
                         <outlet property="bleId" destination="pGJ-BG-dPk" id="rEc-Qm-q6t"/>
-                        <outlet property="buttonStateLabel" destination="oaQ-Ex-coH" id="bsL-Tw-a41"/>
                         <outlet property="ledStateLabel" destination="sXe-8K-21Q" id="L0w-wK-DsY"/>
                         <outlet property="ledToggleSwitch" destination="ug3-O5-D3G" id="uz2-8I-ALm"/>
+                        <outlet property="rxLabel" destination="g1C-H5-FxN" id="WyR-w4-4ST"/>
+                        <outlet property="securityLabel" destination="UPt-Rt-zYz" id="grv-g0-RHM"/>
+                        <outlet property="ssidLabel" destination="wIi-Oi-PQq" id="r5R-Re-h4b"/>
                         <outlet property="wifiId" destination="zki-xx-WcQ" id="bfO-Jr-4z1"/>
                     </connections>
                 </tableViewController>
@@ -364,7 +388,6 @@
         <image name="byNordic" width="120" height="11"/>
         <image name="ic_bluetooth_searching_48pt" width="48" height="48"/>
         <image name="ic_lightbulb_outline_48pt" width="48" height="48"/>
-        <image name="ic_radio_button_checked" width="24" height="24"/>
         <image name="rssi_4" width="128" height="128"/>
     </resources>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

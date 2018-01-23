@@ -18,6 +18,7 @@
 		30B664851FCDA0FC003C8B55 /* MmsensorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B664841FCDA0FC003C8B55 /* MmsensorTableViewCell.swift */; };
 		30B664881FCDA2E0003C8B55 /* MmsensorPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B664871FCDA2E0003C8B55 /* MmsensorPeripheral.swift */; };
 		30B6648B1FD1590A003C8B55 /* BlinkyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B6648A1FD1590A003C8B55 /* BlinkyViewController.swift */; };
+		A35197A8200F2B3500337CDD /* MmSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35197A7200F2B3500337CDD /* MmSensor.swift */; };
 		A3F677741FE22B2200D8C17E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A3F677731FE22B2200D8C17E /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 		30B664841FCDA0FC003C8B55 /* MmsensorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MmsensorTableViewCell.swift; sourceTree = "<group>"; };
 		30B664871FCDA2E0003C8B55 /* MmsensorPeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MmsensorPeripheral.swift; sourceTree = "<group>"; };
 		30B6648A1FD1590A003C8B55 /* BlinkyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlinkyViewController.swift; sourceTree = "<group>"; };
+		A35197A7200F2B3500337CDD /* MmSensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MmSensor.swift; sourceTree = "<group>"; };
 		A3F677701FE2134300D8C17E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		A3F677731FE22B2200D8C17E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = mmSensor/Images.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -161,6 +163,7 @@
 		30B664861FCDA2C5003C8B55 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A35197A7200F2B3500337CDD /* MmSensor.swift */,
 				30B664871FCDA2E0003C8B55 /* MmsensorPeripheral.swift */,
 			);
 			path = Models;
@@ -310,6 +313,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30B664851FCDA0FC003C8B55 /* MmsensorTableViewCell.swift in Sources */,
+				A35197A8200F2B3500337CDD /* MmSensor.swift in Sources */,
 				30B664831FCDA0EB003C8B55 /* ScannerTableViewController.swift in Sources */,
 				30B664881FCDA2E0003C8B55 /* MmsensorPeripheral.swift in Sources */,
 				30B664801FCD9638003C8B55 /* RootViewController.swift in Sources */,

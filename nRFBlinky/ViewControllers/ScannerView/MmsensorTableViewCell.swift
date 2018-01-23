@@ -27,15 +27,15 @@ class MmsensorTableViewCell:
     /*********** BlinkyPerieralを1行に表示   *************/
     public func setupViewWithPeripheral(_ aPeripheral: MmsensorPeripheral) {
         peripheral = aPeripheral
-        peripheralName.text = aPeripheral.advertisedName!
+        peripheralName.text = aPeripheral.mmSensor.advertisedName!
         //print("["+#function+"]index:\(peripheral.celIndex),wifiID:\(String(describing: peripheral.wifiId)),bleId:\(String(describing: peripheral.bleId))")
-        peripheralRssi.text = String(describing: peripheral!.RSSI.decimalValue)
-        if let id = peripheral.wifiId {
+        peripheralRssi.text = String(describing: peripheral.rssi)
+        if let id = peripheral.mmSensor.wifiId {
             peripheralId.text = "LAN: \(id)"
         }else{
             peripheralId.text = ""
         }
-        if let id = peripheral.bleId {
+        if let id = peripheral.mmSensor.bleId {
             peripheralBleId.text = "BLE: \(id)"
         }else{
             peripheralBleId.text = ""
@@ -44,14 +44,14 @@ class MmsensorTableViewCell:
         
 //        peripheralName.text = aPeripheral.
 
-        if peripheral!.RSSI.decimalValue < -77 {
-            peripheralRSSIIcon.image = #imageLiteral(resourceName: "rssi_2")
-        } else if peripheral!.RSSI.decimalValue < -65 {
-            peripheralRSSIIcon.image = #imageLiteral(resourceName: "rssi_3")
-        } else if peripheral!.RSSI.decimalValue < -53 {
-            peripheralRSSIIcon.image = #imageLiteral(resourceName: "rssi_4")
-        } else {
+        if peripheral!.rssi < -77 {
             peripheralRSSIIcon.image = #imageLiteral(resourceName: "rssi_1")
+        } else if peripheral!.rssi < -65 {
+            peripheralRSSIIcon.image = #imageLiteral(resourceName: "rssi_2")
+        } else if peripheral!.rssi < -53 {
+            peripheralRSSIIcon.image = #imageLiteral(resourceName: "rssi_3")
+        } else {
+            peripheralRSSIIcon.image = #imageLiteral(resourceName: "rssi_4")
         }
     }
     /*
@@ -60,8 +60,10 @@ class MmsensorTableViewCell:
      *     */
     public func peripheralUpdatedAdvertisementData(_ aPeripheral: MmsensorPeripheral) {
         if Date().timeIntervalSince(lastUpdateTimestamp) > 1.0 {//1秒間隔で更新
+            //print("start update")
             lastUpdateTimestamp = Date()
             setupViewWithPeripheral(aPeripheral)
+            aPeripheral.resetRssi()
         }
     }
 }
